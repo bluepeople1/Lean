@@ -34,6 +34,11 @@ namespace QuantConnect.Algorithm.Framework.Alphas
         public Guid Id { get; private set; }
 
         /// <summary>
+        /// Gets an identifier for the source model that generated this insight.
+        /// </summary>
+        public string SourceModel { get; internal set; }
+
+        /// <summary>
         /// Gets the utc time this insight was generated
         /// </summary>
         /// <remarks>
@@ -116,10 +121,12 @@ namespace QuantConnect.Algorithm.Framework.Alphas
         /// <param name="direction">The predicted direction</param>
         /// <param name="magnitude">The predicted magnitude as a percentage change</param>
         /// <param name="confidence">The confidence in this insight</param>
-        public Insight(Symbol symbol, TimeSpan period, InsightType type, InsightDirection direction, double? magnitude, double? confidence)
+        /// <param name="sourceModel">An identifier defining the model that generated this insight</param>
+        public Insight(Symbol symbol, TimeSpan period, InsightType type, InsightDirection direction, double? magnitude, double? confidence, string sourceModel = null)
         {
             Id = Guid.NewGuid();
             Score = new InsightScore();
+            SourceModel = sourceModel;
 
             Symbol = symbol;
             Type = type;
@@ -175,10 +182,11 @@ namespace QuantConnect.Algorithm.Framework.Alphas
         /// <param name="direction">The predicted direction</param>
         /// <param name="magnitude">The predicted magnitude as a percent change</param>
         /// <param name="confidence">The confidence in this insight</param>
+        /// <param name="sourceModel">The model generating this insight</param>
         /// <returns>A new insight object for the specified parameters</returns>
-        public static Insight Price(Symbol symbol, TimeSpan period, InsightDirection direction, double? magnitude = null, double? confidence = null)
+        public static Insight Price(Symbol symbol, TimeSpan period, InsightDirection direction, double? magnitude = null, double? confidence = null, string sourceModel = null)
         {
-            return new Insight(symbol, period, InsightType.Price, direction, magnitude, confidence);
+            return new Insight(symbol, period, InsightType.Price, direction, magnitude, confidence, sourceModel);
         }
 
         /// <summary>
